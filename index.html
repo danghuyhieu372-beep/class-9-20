@@ -468,7 +468,21 @@
       </div>
     </div>
 
+    <!-- Nhạc nền -->
+    <audio id="bgMusic" autoplay loop>
+      <source src="https://audio.jukehost.co.uk/pLWnqZWAHkBjQEj9j36PNTLiUh1R9dX7" type="audio/mpeg">
+    </audio>
+
     <script>
+      // Phát nhạc tự động
+      const music = document.getElementById('bgMusic');
+      music.volume = 0.4;
+      
+      // Xử lý autoplay bị chặn
+      document.addEventListener('click', () => {
+        if (music.paused) music.play();
+      }, { once: true });
+
       const CFG = {
         l1: "CHÚC MỪNG 20/10",
         l2: "CLASS 9/20",
