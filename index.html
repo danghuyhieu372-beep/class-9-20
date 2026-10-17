@@ -438,11 +438,47 @@
         letter-spacing: 0.06em;
         font-weight: 300;
       }
+
+      /* Music control button */
+      #musicBtn {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(255, 61, 132, 0.2);
+        border: 1px solid rgba(255, 182, 213, 0.4);
+        color: var(--pink);
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 1.1rem;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+      }
+
+      #musicBtn:hover {
+        background: rgba(255, 61, 132, 0.3);
+        transform: scale(1.1);
+      }
     </style>
   </head>
   <body>
     <div class="glow g1"></div>
     <div class="glow g2"></div>
+
+    <!-- Music Control Button -->
+    <button id="musicBtn" title="Bật/tắt nhạc">🔊</button>
+
+    <!-- Hidden YouTube Player -->
+    <iframe 
+      id="bgMusic"
+      style="display:none"
+      src="https://www.youtube.com/embed/z-FEPDDL4HA?autoplay=1&loop=1&playlist=z-FEPDDL4HA&enablejsapi=1" 
+      allow="autoplay; encrypted-media">
+    </iframe>
 
     <div id="stage">
       <div class="line l1" id="l1"></div>
@@ -468,15 +504,7 @@
       </div>
     </div>
 
-    <!-- Nhạc nền -->
-    <audio id="bgMusic" loop>
-      <source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_3ab01d4e3b.mp3" type="audio/mpeg">
-    </audio>
-
     <script>
-      const music = document.getElementById('bgMusic');
-      music.volume = 0.35;
-      
       const CFG = {
         l1: "CHÚC MỪNG 20/10",
         l2: "CLASS 9/20",
@@ -632,7 +660,6 @@
       function decode() {
         if (decoding) return;
         decoding = true;
-        music.play().catch(() => {}); // Phát nhạc khi bấm nút
         $("btn").style.display = "none";
         $("hint").textContent = "Các chữ cái đang tìm về nhau... ✨";
         let i = 0;
@@ -754,6 +781,23 @@
         if (e.target.tagName !== "BUTTON") {
           for (let i = 0; i < 6; i++)
             burst(e.clientX, e.clientY, rnd(HEARTS), 18);
+        }
+      });
+
+      // Music control
+      let isPlaying = true;
+      const musicBtn = $("musicBtn");
+      const musicPlayer = $("bgMusic");
+
+      musicBtn.addEventListener("click", () => {
+        if (isPlaying) {
+          musicPlayer.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+          musicBtn.textContent = "🔇";
+          isPlaying = false;
+        } else {
+          musicPlayer.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+          musicBtn.textContent = "🔊";
+          isPlaying = true;
         }
       });
     </script>
